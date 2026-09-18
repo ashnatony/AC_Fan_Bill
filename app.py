@@ -1,7 +1,8 @@
 import streamlit as st
 import joblib
+import pandas as pd
 
-model_data = joblib.load("electric_bill_model.pkl")
+model_data = joblib.load("electric_bill_model(1).pkl")
 
 model = model_data["model"]
 poly = model_data["poly"]
