@@ -1,32 +1,8 @@
 import streamlit as st
-import joblib
-import pandas as pd
-
-model_data = joblib.load("electric_bill_model(1).pkl")
-
-model = model_data["model"]
-poly = model_data["poly"]
-
-st.title("Electric Bill Predictor")
-
-ac_units = st.number_input(
-    "Enter AC Units",
-    min_value=0.0,
-    step=1.0
-)
-
-if st.button("Predict"):
-    
-    data = [[ac_units]]
-    data_poly = poly.transform(data)
-
-    prediction = model.predict(data_poly)
-
-    st.success(f"Expected Electric Bill: {prediction[0]:.2f}")import streamlit as st
 import pandas as pd
 import joblib
 
-pipeline = joblib.load("electric_bill_model (1).pkl")
+pipeline = joblib.load("electric_bill_model(1).pkl")
 
 poly = pipeline["poly"]
 model = pipeline["model"]
@@ -40,26 +16,37 @@ st.write(
 ac_units = st.number_input(
     "AC Units",
     min_value=0.0,
-    value=100.0
+    value=100.0,
+    step=1.0
 )
 
 fan_units = st.number_input(
     "Fan Units",
     min_value=0.0,
-    value=50.0
+    value=50.0,
+    step=1.0
 )
 
 if st.button("Predict Electric Bill"):
 
-    input_data = pd.DataFrame({
-        "AC_Units": [ac_units],
-        "Fan_Units": [fan_units]
-    })
+    # Validate inputs
+    if ac_units <= 0 or fan_units <= 0:
 
-    input_poly = poly.transform(input_data)
+        st.error(
+            "AC Units and Fan Units must both be greater than 0."
+        )
 
-    prediction = model.predict(input_poly)
+    else:
 
-    st.success(
-        f"Predicted Electric Bill: ₹{prediction[0]:.2f}"
-    )
+        input_data = pd.DataFrame({
+            "AC_Units": [ac_units],
+            "Fan_Units": [fan_units]
+        })
+
+        input_poly = poly.transform(input_data)
+
+        prediction = model.predict(input_poly)
+
+        st.success(
+            f"Predicted Electric Bill: ₹{prediction[0]:.2f}"
+        )
